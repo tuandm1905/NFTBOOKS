@@ -61,7 +61,7 @@ namespace BaiTapLon.Areas.Admin.Controllers
         {
             //C:/Inetpub/vhosts/hieusachviet.site/httpdocs/
             //D:/Jquery/Do_An/BaiTapLon/
-            var wb = new XLWorkbook(@"D:/Jquery/Do_An/BaiTapLon/Resource/Template/Tempalet_Kho_Hang.xlsx");
+            var wb = new XLWorkbook(@"D:\[LEARN]\SEMESTER 5\SWP391\FULL DO AN\Do_An\BaiTapLon\Resource\Template\Tempalet_Kho_Hang.xlsx");
             var workSheet = wb.Worksheet(1);
             
 
