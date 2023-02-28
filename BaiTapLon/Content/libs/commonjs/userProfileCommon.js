@@ -45,7 +45,7 @@ var ChangeUserProfile = function () {
         data: data,
         success: function (result) {
             if (result == 1) {
-                notificationService().displaySuccess("Cập nhật thông tin thành công.");
+                notificationService().displaySuccess("Cập nhật thông tin thành côngthành côngthành côngthành công.");
                 setTimeout(function () {
                     window.location.reload(1)
                 }, 2000);
@@ -58,7 +58,7 @@ var ChangeUserProfile = function () {
                 notificationService().displayError("Định dạng email không hợp lệ.");
             }
             else if (result == 0) {
-                notificationService().displayError("Cập nhật thông tin không thành công.");
+                notificationService().displayError("Cập nhật thông tin không thành côngthành côngthành côngthành công.");
             }
 
         }
@@ -82,7 +82,7 @@ var ChangePass = function () {
                 notificationService().displayError("Mật khẩu hiện tại không chính xác");
             }
             else if (result == -4) {
-                notificationService().displayError("Mật khẩu mới và xác nhận không được để trống");
+                notificationService().displayError("Mật khẩu mới và xác nhận không được để trốngtrốngtrốngtrống");
             }
             else if (result == -1) {
                 notificationService().displayError("Mật khẩu không được để trống");

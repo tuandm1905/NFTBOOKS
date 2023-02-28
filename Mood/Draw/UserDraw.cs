@@ -8,6 +8,7 @@ using Mood.UserModel;
 using System.Text.RegularExpressions;
 using X.PagedList;
 using Mood.HoaDonModel;
+using System.Data.Entity.ModelConfiguration.Configuration;
 
 namespace Mood.Draw
 {
@@ -126,7 +127,9 @@ namespace Mood.Draw
         }
         public bool CheckSDT(string SDT)
         {
-            Regex check = new Regex(@"^[0-9]+$");
+            //Regex check = new Regex(@"^[0-9]+$");
+            Regex check = new Regex(@"^(09|03|07|08|05)+([0-9]{8})$");
+            //------------------------------------------------------------------ CODE KIỂM TRA SỐ ĐIỆN THOẠI - MINH TUẤN------------------------------------------------------------------
             return check.IsMatch(SDT);
         }
         public bool IsValidEmail(string strIn)

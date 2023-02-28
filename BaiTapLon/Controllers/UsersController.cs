@@ -137,23 +137,50 @@ namespace BaiTapLon.Controllers
         {
             var draw = new UserDraw();
             var result = 5;
-            if (ModelState.IsValid)
+            /*if (ModelState.IsValid)
+            {*/
+            if (model.UserName == null && model.PassWord == null)
             {
-                result = draw.LoginHomeUser(model.UserName, EncryptorMD5.GetMD5(model.PassWord));
-                if (result == 1)
-                {
-
-                    var user = draw.getByID(model.UserName);
-                    var userSession = new UserLogin();
-                    userSession.userName = user.UserName;
-                    userSession.name = user.Name;
-                    userSession.address = user.Adress;
-                    userSession.userId = user.IDUser;
-                    Session.Add(Constant.USER_SESSION, userSession);
-                    return Json(result, JsonRequestBehavior.AllowGet);
-                }
+                result = -7; // Tài khoản và mật khẩu không được trống
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
-            return Json(result, JsonRequestBehavior.AllowGet);
+            else
+            if (model.UserName == null || model.UserName == "")
+            {
+                result = -4; // Tài khoản không được để trống
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            else
+            if (model.PassWord == null)
+            {
+                result = -5; // Mật khẩu không được để trống
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            else
+            { 
+            if (model.PassWord.Length < 8)
+                {
+                    result = -6; // Mật khẩu ít nhất 8 ký tự
+                    return Json(result, JsonRequestBehavior.AllowGet);
+                }    
+                else
+                {
+                    result = draw.LoginHomeUser(model.UserName, EncryptorMD5.GetMD5(model.PassWord));
+                    if (result == 1)
+                    {
+
+                        var user = draw.getByID(model.UserName);
+                        var userSession = new UserLogin();
+                        userSession.userName = user.UserName;
+                        userSession.name = user.Name;
+                        userSession.address = user.Adress;
+                        userSession.userId = user.IDUser;
+                        Session.Add(Constant.USER_SESSION, userSession);
+                        return Json(result, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                }
+                return Json(result, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Logout()
         {

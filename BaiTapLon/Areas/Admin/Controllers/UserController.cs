@@ -7,6 +7,7 @@ using Mood.Draw;
 using Mood.EF2;
 using BaiTapLon.Common;
 using X.PagedList;
+using BotDetect;
 
 namespace BaiTapLon.Areas.Admin.Controllers
 {
@@ -109,8 +110,8 @@ namespace BaiTapLon.Areas.Admin.Controllers
                 }
                 if (user.IsValidEmail(entity.Email) == true)
                 {
-                    if (user.CheckSDT(entity.Phone) == true)
-                    {
+                    if (user.CheckSDT(entity.Phone) == true )
+                        {
                         var result = user.Update(entity);
                         if (result == true)
                         {
