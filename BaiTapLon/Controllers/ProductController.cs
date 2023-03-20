@@ -50,6 +50,10 @@ namespace BaiTapLon.Controllers
                 status = true
             }, JsonRequestBehavior.AllowGet);//cho phép GET bên Method
         }
+<<<<<<< HEAD
+=======
+        //Quyen----------------------------------------------------------------------
+>>>>>>> d9f1ffb (Update Project)
         public ActionResult Search(string keyWord, int page = 1, int pagesize = 20)
         {
             var model = new SanphamDraw().getByKeyWord(keyWord, page, pagesize);

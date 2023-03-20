@@ -270,11 +270,22 @@ namespace Mood.Draw
             try
             {
                 var user = db.Users.Find(entity.IDUser);
+<<<<<<< HEAD
                 if (!string.IsNullOrEmpty(entity.PassWord))
                 {
                     user.PassWord = entity.PassWord;// đảm bảo nếu người dùng k nhập pass thì nó sẽ k update
                     user.PassWord = passWordNew;
                 }
+=======
+                Regex check = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$");
+                if (check.IsMatch(passWordNew) == true)
+                    if (!string.IsNullOrEmpty(entity.PassWord))
+                    {
+                        user.PassWord = entity.PassWord;// đảm bảo nếu người dùng k nhập pass thì nó sẽ k update
+                        user.PassWord = passWordNew;
+                    }
+                    else return false;
+>>>>>>> d9f1ffb (Update Project)
                 
                 db.SaveChanges();
                 return true;

@@ -19,6 +19,7 @@ namespace BaiTapLon.Controllers
     public class UsersController : Controller
     {
         private const string CartSession = "CartSession";// hằng số không thể đổi
+<<<<<<< HEAD
         private Uri RedirectUri
         {
             get
@@ -33,6 +34,8 @@ namespace BaiTapLon.Controllers
 
        
 
+=======
+>>>>>>> d9f1ffb (Update Project)
         [HttpPost]
         public JsonResult RegisterUser(RegisterModel model)
         {
@@ -297,6 +300,10 @@ namespace BaiTapLon.Controllers
                                 if (modelPass.newPassWorrd.Contains(modelPass.confinrmPass))
                                 {
                                     var result = user.UpdatePassword(userChange, EncryptorMD5.GetMD5(modelPass.newPassWorrd));
+<<<<<<< HEAD
+=======
+
+>>>>>>> d9f1ffb (Update Project)
                                     if (result == true)
                                     {
                                         ViewBag.Success = "Đổi mật khẩu thành công";
@@ -408,6 +415,7 @@ namespace BaiTapLon.Controllers
             return View(userReply);
         }
         [AllowAnonymous]
+<<<<<<< HEAD
         public ActionResult LoginFacebook()
         {
             var fb = new FacebookClient();
@@ -475,6 +483,8 @@ namespace BaiTapLon.Controllers
             return Redirect("/");
         }
         
+=======
+>>>>>>> d9f1ffb (Update Project)
         [HttpPost]
         public JsonResult RetestPassWord(string emailRetestPass, string userRetestPass)
         {

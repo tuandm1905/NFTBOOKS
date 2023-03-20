@@ -25,7 +25,11 @@ namespace BaiTapLon.Controllers
         public ActionResult Index()
         {
             var cart = Session[CartSession];
+<<<<<<< HEAD
            
+=======
+
+>>>>>>> d9f1ffb (Update Project)
             var list = new List<CartItem>();
             ViewBag.totalProduct = 0;
             if (cart != null)
@@ -61,7 +65,11 @@ namespace BaiTapLon.Controllers
                         }
                     }
                     var cartCount1 = list.Count();
+<<<<<<< HEAD
                    
+=======
+
+>>>>>>> d9f1ffb (Update Project)
                     return Json(
                         new
                         {
@@ -69,7 +77,11 @@ namespace BaiTapLon.Controllers
                         }
                         , JsonRequestBehavior.AllowGet);
                 }
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> d9f1ffb (Update Project)
                 else
                 {
                     //Chưa có sản phẩm như z trong giỏ.
@@ -81,7 +93,11 @@ namespace BaiTapLon.Controllers
                     item.countCart = list.Count();
                     var cartCount1 = list.Count();
                     //Gán vào session
+<<<<<<< HEAD
                     
+=======
+
+>>>>>>> d9f1ffb (Update Project)
                     return Json(
                         new
                         {
@@ -90,9 +106,15 @@ namespace BaiTapLon.Controllers
                         , JsonRequestBehavior.AllowGet);
 
                 }
+<<<<<<< HEAD
                 
             }
             
+=======
+
+            }
+
+>>>>>>> d9f1ffb (Update Project)
             else
             {
                 //Tạo mới đối tượng cart item
@@ -101,13 +123,21 @@ namespace BaiTapLon.Controllers
                 item.Quantity = quantity;
                 item.countCart = 1;
                 var list = new List<CartItem>();
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> d9f1ffb (Update Project)
                 list.Add(item);
                 //Gán vào session
                 Session[CartSession] = list;
 
             }
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> d9f1ffb (Update Project)
             return Json(
                  new
                  {
@@ -115,10 +145,17 @@ namespace BaiTapLon.Controllers
                  }
                 , JsonRequestBehavior.AllowGet);
 
+<<<<<<< HEAD
             
         }
         
        
+=======
+
+        }
+
+
+>>>>>>> d9f1ffb (Update Project)
         public JsonResult Update(string cartModel)
         {
             var jsonCart = new JavaScriptSerializer().Deserialize<List<CartItem>>(cartModel);
@@ -235,6 +272,7 @@ namespace BaiTapLon.Controllers
                         }
                     }
                     else
+<<<<<<< HEAD
                     {
                         if (payment_method.Equals("MOMO"))
                         {
@@ -380,6 +418,72 @@ namespace BaiTapLon.Controllers
                             {
                                 return View("cancel_order");
                             }
+=======
+
+                        if (payment_method.Equals("MOMO"))
+                    {
+                        var sum = 0;
+                        foreach (var item in cart)
+                        {
+                            var price_sale = 0;
+                            if (item.Product.PriceSale != null)
+                            {
+                                price_sale = (int)item.Product.PriceSale;
+                            }
+                            var price_deal = (item.Product.GiaTien - item.Product.GiaTien / 100 * (price_sale));
+                            sum += price_deal * item.Quantity;
+                        }
+                        confirm_orderPaymentOnline_momo();
+
+
+                        var resultOrder = saveOrder(shipName, shipAddress, shipMobile, shipMail, payment_method, orderCode);
+                        if (resultOrder)
+                        {
+                            var OrderInfo = new OrderDraw().getOrderByOrderCode(orderCode);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();
+                            ViewBag.paymentStatus = OrderInfo.StatusPayment;
+                            ViewBag.Methodpayment = OrderInfo.DeliveryPaymentMethod;
+                            ViewBag.Sum = sum;
+                            Session[CartSession] = null;
+                            return View("oderComplete", OrderInfo);
+
+                        }
+                        else
+                        {
+                            return Redirect("/loi-thanh-toan");
+                        }
+                        //return View("confirm_orderPaymentOnline");
+                    }
+
+                    //Neu Thanh Toán ATM online
+                    else if (payment_method.Equals("ATM_ONLINE"))
+                    {
+                        var sum = 0;
+                        foreach (var item in cart)
+                        {
+                            var price_sale = 0;
+                            if (item.Product.PriceSale != null)
+                            {
+                                price_sale = (int)item.Product.PriceSale;
+                            }
+                            var price_deal = (item.Product.GiaTien - item.Product.GiaTien / 100 * (price_sale));
+                            sum += price_deal * item.Quantity;
+                        }
+
+                        var resultOrder = saveOrder(shipName, shipAddress, shipMobile, shipMail, payment_method, orderCode);
+                        if (resultOrder)
+                        {
+                            var OrderInfo = new OrderDraw().getOrderByOrderCode(orderCode);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();
+                            ViewBag.paymentStatus = OrderInfo.StatusPayment;
+                            ViewBag.Methodpayment = OrderInfo.DeliveryPaymentMethod;
+                            ViewBag.Sum = sum;
+                            Session[CartSession] = null;
+                            return View("oderComplete", OrderInfo);
+
+                        }
+                        else
+                        {
+                            return Redirect("/loi-thanh-toan");
+>>>>>>> d9f1ffb (Update Project)
                         }
                     }
                 }
@@ -394,7 +498,11 @@ namespace BaiTapLon.Controllers
         }
         public ActionResult Success(Orders OrderInfo)
         {
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> d9f1ffb (Update Project)
             return View(OrderInfo);
 
         }
@@ -424,7 +532,11 @@ namespace BaiTapLon.Controllers
             }
             if (result.errorCode == "00")
             {
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> d9f1ffb (Update Project)
                 var OrderInfo = new OrderDraw().getOrderByOrderCode(result.order_code);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();
                 var order_detail = new OrderDraw().getProductByOrder_Details(OrderInfo.IDOder);
                 foreach (var item in order_detail)
@@ -441,10 +553,17 @@ namespace BaiTapLon.Controllers
             }
             else
             {
+<<<<<<< HEAD
                
                 ViewBag.status = false;
                 
                 
+=======
+
+                ViewBag.status = false;
+
+
+>>>>>>> d9f1ffb (Update Project)
             }
             return View("confirm_orderPaymentOnline");
         }
@@ -468,11 +587,19 @@ namespace BaiTapLon.Controllers
             }
             if (errorCode == "0")
             {
+<<<<<<< HEAD
                 
                 var OrderInfo = new OrderDraw().getOrderByOrderCode(oderCode);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();
                 var order_detail = new OrderDraw().getProductByOrder_Details(OrderInfo.IDOder);
 
                 foreach(var item in order_detail)
+=======
+
+                var OrderInfo = new OrderDraw().getOrderByOrderCode(oderCode);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();
+                var order_detail = new OrderDraw().getProductByOrder_Details(OrderInfo.IDOder);
+
+                foreach (var item in order_detail)
+>>>>>>> d9f1ffb (Update Project)
                 {
                     new SanphamDraw().UpdateTonKho(item.ProductID, (int)item.Quanlity);
                 }
@@ -484,18 +611,32 @@ namespace BaiTapLon.Controllers
                 Session["CartSession"] = null;
                 return View("oderComplete", OrderInfo);
             }
+<<<<<<< HEAD
             
             else
             {
                 
+=======
+
+            else
+            {
+
+>>>>>>> d9f1ffb (Update Project)
                 ViewBag.status = false;
                 return View("cancel_order_momo");
             }
 
+<<<<<<< HEAD
           
         }
         
         public bool saveOrder(string shipName, string shipAddress, string shipMobile, string shipMail,string payment_method,string oderCode)
+=======
+
+        }
+
+        public bool saveOrder(string shipName, string shipAddress, string shipMobile, string shipMail, string payment_method, string oderCode)
+>>>>>>> d9f1ffb (Update Project)
         {
 
             var userSession = (UserLogin)Session[Common.Constant.USER_SESSION];
@@ -513,12 +654,20 @@ namespace BaiTapLon.Controllers
             order.Status = 0;
             order.NhanHang = 0;
             order.GiaoHang = 0;
+<<<<<<< HEAD
             if(payment_method.Equals("MOMO"))
+=======
+            if (payment_method.Equals("MOMO"))
+>>>>>>> d9f1ffb (Update Project)
             {
                 order.DeliveryPaymentMethod = "Cổng thanh toán momo";
                 order.OrderCode = oderCode;
             }
+<<<<<<< HEAD
             if(payment_method.Equals("COD"))
+=======
+            if (payment_method.Equals("COD"))
+>>>>>>> d9f1ffb (Update Project)
             {
                 order.DeliveryPaymentMethod = "COD";
                 order.OrderCode = oderCode;
@@ -585,7 +734,11 @@ namespace BaiTapLon.Controllers
                     return true;
                 }
                 */
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> d9f1ffb (Update Project)
                 return true;
             }
             catch (Exception)
@@ -608,7 +761,11 @@ namespace BaiTapLon.Controllers
 
         public ActionResult cancel_order()
         {
+<<<<<<< HEAD
             if(Session[OrderIDDel] != null)
+=======
+            if (Session[OrderIDDel] != null)
+>>>>>>> d9f1ffb (Update Project)
             {
                 string orderCode = Session[OrderIDDel].ToString();
                 var OrderInfo = new OrderDraw().getOrderByOrderCode(orderCode);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();                                                        //OrderInfo.StatusPayment = 0;//huy thanh toán
