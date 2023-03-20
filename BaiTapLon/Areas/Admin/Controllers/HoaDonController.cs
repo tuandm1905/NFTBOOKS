@@ -142,7 +142,14 @@ namespace BaiTapLon.Areas.Admin.Controllers
         }
         public ActionResult ExportExel(long id)
         {
+<<<<<<< HEAD
             //C:/Inetpub/vhosts/hieusachviet.site/httpdocs/
+=======
+<<<<<<< HEAD
+            //C:/Inetpub/vhosts/hieusachviet.site/httpdocs/
+=======
+>>>>>>> d9f1ffb (Update Project)
+>>>>>>> 406feef (Tuan - Update Project All)
             //D:/Jquery/Do_An/BaiTapLon/
             var wb = new XLWorkbook(@"D:\[LEARN]\SEMESTER 5\SWP391\FULL DO AN\Do_An\BaiTapLon\Resource\Template\Hoa_Don_Template.xlsx");
             var workSheet = wb.Worksheet(1);

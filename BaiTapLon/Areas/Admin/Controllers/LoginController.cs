@@ -39,7 +39,16 @@ namespace BaiTapLon.Areas.Admin.Controllers
                 else if(result == -1)
                 {
                     ModelState.AddModelError("", "Tài khoản đã bị khóa !!!");
+<<<<<<< HEAD
                 }else if(result == -2)
+=======
+<<<<<<< HEAD
+                }else if(result == -2)
+=======
+                }
+                else if(result == -2)
+>>>>>>> d9f1ffb (Update Project)
+>>>>>>> 406feef (Tuan - Update Project All)
                 {
                     ModelState.AddModelError("","Mật khẩu sai!!!");
                 }

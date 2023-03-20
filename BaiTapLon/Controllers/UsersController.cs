@@ -19,6 +19,26 @@ namespace BaiTapLon.Controllers
     public class UsersController : Controller
     {
         private const string CartSession = "CartSession";// hằng số không thể đổi
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        private Uri RedirectUri
+        {
+            get
+            {
+                var uriBuilder = new UriBuilder(Request.Url);
+                uriBuilder.Query = null;
+                uriBuilder.Fragment = null;
+                uriBuilder.Path = Url.Action("FacebookCallback");
+                return uriBuilder.Uri;
+            }
+        }
+
+       
+
+=======
+>>>>>>> d9f1ffb (Update Project)
+>>>>>>> 406feef (Tuan - Update Project All)
         [HttpPost]
         public JsonResult RegisterUser(RegisterModel model)
         {
@@ -283,7 +303,14 @@ namespace BaiTapLon.Controllers
                                 if (modelPass.newPassWorrd.Contains(modelPass.confinrmPass))
                                 {
                                     var result = user.UpdatePassword(userChange, EncryptorMD5.GetMD5(modelPass.newPassWorrd));
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> d9f1ffb (Update Project)
+>>>>>>> 406feef (Tuan - Update Project All)
                                     if (result == true)
                                     {
                                         ViewBag.Success = "Đổi mật khẩu thành công";
@@ -395,6 +422,79 @@ namespace BaiTapLon.Controllers
             return View(userReply);
         }
         [AllowAnonymous]
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        public ActionResult LoginFacebook()
+        {
+            var fb = new FacebookClient();
+            var loginFb = fb.GetLoginUrl(new
+            {
+                client_id = ConfigurationManager.AppSettings["FBAppId"],
+                client_secret = ConfigurationManager.AppSettings["FBAppSecret"],
+                redirect_uri = RedirectUri.AbsoluteUri,
+                response_type = "code",
+                scope = "email",
+            });
+            return Redirect(loginFb.AbsoluteUri);
+        }
+
+        public ActionResult FacebookCallback(string code)
+        {
+            var fb = new FacebookClient();
+            dynamic result = fb.Post("oauth/access_token", new
+            {
+                client_id = ConfigurationManager.AppSettings["FBAppId"],
+                client_secret = ConfigurationManager.AppSettings["FBAppSecret"],
+                redirect_uri = RedirectUri.AbsoluteUri,
+                code = code,
+            });
+            var accessToken = result.access_token;
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                fb.AccessToken = accessToken;
+                //Get ra thông tin cần sử dung
+                dynamic me = fb.Get("me?fields=first_name,middle_name,last_name,id,email");
+                string email = me.email;
+                string userName = me.email;
+                string firstName = me.first_name;
+                string middleName = me.middle_name;
+                string lastName = me.last_name;
+
+                var user = new User();
+                user.Email = email;
+                user.UserName = email;
+                user.Name = firstName + " " + middleName + " " + lastName;
+
+
+                var addUserr = new UserDraw().InsertFaceBook(user);
+                if (addUserr > 0)
+                {
+                    var usergetByID = new UserDraw().getByIDLogin(addUserr);
+                    var userSession = new UserLogin();
+                    userSession.userName = usergetByID.UserName;
+                    userSession.name = usergetByID.Name;
+                    userSession.address = usergetByID.Adress;
+                    userSession.userId = usergetByID.IDUser;
+                    Session.Add(Constant.USER_SESSION, userSession);
+                    //Session[CartSession] = null;
+                    return Redirect("/");
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+
+            }
+            return Redirect("/");
+        }
+        
+=======
+>>>>>>> d9f1ffb (Update Project)
+>>>>>>> 406feef (Tuan - Update Project All)
         [HttpPost]
         public JsonResult RetestPassWord(string emailRetestPass, string userRetestPass)
         {
