@@ -25,7 +25,7 @@ namespace BaiTapLon.Controllers
         public ActionResult Index()
         {
             var cart = Session[CartSession];
-
+           
             var list = new List<CartItem>();
             ViewBag.totalProduct = 0;
             if (cart != null)
@@ -61,7 +61,7 @@ namespace BaiTapLon.Controllers
                         }
                     }
                     var cartCount1 = list.Count();
-
+                   
                     return Json(
                         new
                         {
@@ -69,7 +69,7 @@ namespace BaiTapLon.Controllers
                         }
                         , JsonRequestBehavior.AllowGet);
                 }
-
+                
                 else
                 {
                     //Chưa có sản phẩm như z trong giỏ.
@@ -81,7 +81,7 @@ namespace BaiTapLon.Controllers
                     item.countCart = list.Count();
                     var cartCount1 = list.Count();
                     //Gán vào session
-
+                    
                     return Json(
                         new
                         {
@@ -90,9 +90,9 @@ namespace BaiTapLon.Controllers
                         , JsonRequestBehavior.AllowGet);
 
                 }
-
+                
             }
-
+            
             else
             {
                 //Tạo mới đối tượng cart item
@@ -101,13 +101,13 @@ namespace BaiTapLon.Controllers
                 item.Quantity = quantity;
                 item.countCart = 1;
                 var list = new List<CartItem>();
-
+                
                 list.Add(item);
                 //Gán vào session
                 Session[CartSession] = list;
 
             }
-
+            
             return Json(
                  new
                  {
@@ -115,10 +115,10 @@ namespace BaiTapLon.Controllers
                  }
                 , JsonRequestBehavior.AllowGet);
 
-
+            
         }
-
-
+        
+       
         public JsonResult Update(string cartModel)
         {
             var jsonCart = new JavaScriptSerializer().Deserialize<List<CartItem>>(cartModel);
@@ -235,70 +235,151 @@ namespace BaiTapLon.Controllers
                         }
                     }
                     else
-
+                    {
                         if (payment_method.Equals("MOMO"))
+                        {
+                            Session[OrderIDDel] = null;
+                            //request params need to request to MoMo system
+                            string endpoint = momoInfo.endpoint;
+                            string partnerCode = momoInfo.partnerCode;
+                            string accessKey = momoInfo.accessKey;
+                            string serectkey = momoInfo.serectkey;
+                            string orderInfo = momoInfo.orderInfo;
+                            string returnUrl = momoInfo.returnUrl;
+                            string notifyurl = momoInfo.notifyurl;
+
+                            string amount = sumOrder;
+                            string orderid = Guid.NewGuid().ToString();
+                            string requestId = Guid.NewGuid().ToString();
+                            string extraData = "";
+
+                            //Before sign HMAC SHA256 signature
+                            string rawHash = "partnerCode=" +
+                                partnerCode + "&accessKey=" +
+                                accessKey + "&requestId=" +
+                                requestId + "&amount=" +
+                                amount + "&orderId=" +
+                                orderid + "&orderInfo=" +
+                                orderInfo + "&returnUrl=" +
+                                returnUrl + "&notifyUrl=" +
+                                notifyurl + "&extraData=" +
+                                extraData;
+                            MoMoSecurity crypto = new MoMoSecurity();
+                            //sign signature SHA256
+                            string signature = crypto.signSHA256(rawHash, serectkey);
+
+
+                            //build body json request
+                            JObject message = new JObject
                     {
-                        var sum = 0;
-                        foreach (var item in cart)
-                        {
-                            var price_sale = 0;
-                            if (item.Product.PriceSale != null)
+                { "partnerCode", partnerCode },
+                { "accessKey", accessKey },
+                { "requestId", requestId },
+                { "amount", amount },
+                { "orderId", orderid },
+                { "orderInfo", orderInfo },
+                { "returnUrl", returnUrl },
+                { "notifyUrl", notifyurl },
+                { "extraData", extraData },
+                { "requestType", "captureMoMoWallet" },
+                { "signature", signature }
+
+                 };
+                            ServicePointManager.Expect100Continue = true;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                            string responseFromMomo = PayMentRequest.sendPaymentRequest(endpoint, message.ToString());
+                            JObject jmessage = JObject.Parse(responseFromMomo);
+
+
+                            var resultOrder = saveOrder(shipName, shipAddress, shipMobile, shipMail, payment_method, orderid);
+                            Session[OrderIDDel] = orderCode;
+                            if (resultOrder)
                             {
-                                price_sale = (int)item.Product.PriceSale;
+                                return Redirect(jmessage.GetValue("payUrl").ToString());
                             }
-                            var price_deal = (item.Product.GiaTien - item.Product.GiaTien / 100 * (price_sale));
-                            sum += price_deal * item.Quantity;
-                        }
-                        confirm_orderPaymentOnline_momo();
-
-
-                        var resultOrder = saveOrder(shipName, shipAddress, shipMobile, shipMail, payment_method, orderCode);
-                        if (resultOrder)
-                        {
-                            var OrderInfo = new OrderDraw().getOrderByOrderCode(orderCode);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();
-                            ViewBag.paymentStatus = OrderInfo.StatusPayment;
-                            ViewBag.Methodpayment = OrderInfo.DeliveryPaymentMethod;
-                            ViewBag.Sum = sum;
-                            Session[CartSession] = null;
-                            return View("oderComplete", OrderInfo);
-
-                        }
-                        else
-                        {
-                            return Redirect("/loi-thanh-toan");
-                        }
-                        //return View("confirm_orderPaymentOnline");
-                    }
-
-                    //Neu Thanh Toán ATM online
-                    else if (payment_method.Equals("ATM_ONLINE"))
-                    {
-                        var sum = 0;
-                        foreach (var item in cart)
-                        {
-                            var price_sale = 0;
-                            if (item.Product.PriceSale != null)
+                            else
                             {
-                                price_sale = (int)item.Product.PriceSale;
+                                return Redirect("/loi-thanh-toan");
                             }
-                            var price_deal = (item.Product.GiaTien - item.Product.GiaTien / 100 * (price_sale));
-                            sum += price_deal * item.Quantity;
                         }
 
-                        var resultOrder = saveOrder(shipName, shipAddress, shipMobile, shipMail, payment_method, orderCode);
-                        if (resultOrder)
+                        //Neu Thanh toan Ngan Luong
+                        else if (payment_method.Equals("NL"))
                         {
-                            var OrderInfo = new OrderDraw().getOrderByOrderCode(orderCode);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();
-                            ViewBag.paymentStatus = OrderInfo.StatusPayment;
-                            ViewBag.Methodpayment = OrderInfo.DeliveryPaymentMethod;
-                            ViewBag.Sum = sum;
-                            Session[CartSession] = null;
-                            return View("oderComplete", OrderInfo);
+                            Session[OrderIDDel] = null;
+                            string str_bankcode = Request["bankcode"];
+                            RequestInfo info = new RequestInfo();
+                            info.Merchant_id = nganluongInfo.Merchant_id;
+                            info.Merchant_password = nganluongInfo.Merchant_password;
+                            info.Receiver_email = nganluongInfo.Receiver_email;
+                            info.cur_code = "vnd";
+                            info.bank_code = str_bankcode;
+                            info.Order_code = orderCode;
+                            info.Total_amount = sumOrder;
+                            info.fee_shipping = "0";
+                            info.Discount_amount = "0";
+                            info.order_description = "Thanh toán ngân lượng cho đơn hàng";
+                            info.return_url = nganluongInfo.return_url;
+                            info.cancel_url = nganluongInfo.cancel_url;
+                            info.Buyer_fullname = shipName;
+                            info.Buyer_email = shipMail;
+                            info.Buyer_mobile = shipMobile;
+                            ServicePointManager.Expect100Continue = true;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                            APICheckoutV3 objNLChecout = new APICheckoutV3();
+                            ResponseInfo result = objNLChecout.GetUrlCheckout(info, payment_method);
+                            // neu khong gap loi gi
+                            if (result.Error_code == "00")
+                            {
+                                saveOrder(shipName, shipAddress, shipMobile, shipMail, payment_method, orderCode);
+                                Session[OrderIDDel] = orderCode;
+                                // chuyen sang trang ngan luong
+                                return Redirect(result.Checkout_url);
+                            }
+                            else
+                            {
+
+                                ViewBag.status = false;
+                                return View("cancel_order");
+                            }
 
                         }
-                        else
+                        //Neu Thanh Toán ATM online
+                        else if (payment_method.Equals("ATM_ONLINE"))
                         {
-                            return Redirect("/loi-thanh-toan");
+                            Session[OrderIDDel] = null;
+                            string str_bankcode = Request["bankcode"];
+                            RequestInfo info = new RequestInfo();
+                            info.Merchant_id = nganluongInfo.Merchant_id;
+                            info.Merchant_password = nganluongInfo.Merchant_password;
+                            info.Receiver_email = nganluongInfo.Receiver_email;
+                            info.cur_code = "vnd";
+                            info.bank_code = str_bankcode;
+                            info.Order_code = orderCode;
+                            info.Total_amount = sumOrder;
+                            info.fee_shipping = "0";
+                            info.Discount_amount = "0";
+                            info.order_description = "Thanh toán ngân lượng cho đơn hàng";
+                            info.return_url = nganluongInfo.return_url;
+                            info.cancel_url = nganluongInfo.cancel_url;
+                            info.Buyer_fullname = shipName;
+                            info.Buyer_email = shipMail;
+                            info.Buyer_mobile = shipMobile;
+                            ServicePointManager.Expect100Continue = true;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                            APICheckoutV3 objNLChecout = new APICheckoutV3();
+                            ResponseInfo result = objNLChecout.GetUrlCheckout(info, payment_method);
+                            // neu khong gap loi gi
+                            if (result.Error_code == "00")
+                            {
+                                var resultNL = saveOrder(shipName, shipAddress, shipMobile, shipMail, payment_method, orderCode);
+                                Session[OrderIDDel] = orderCode;
+                                return Redirect(result.Checkout_url);
+                            }
+                            else
+                            {
+                                return View("cancel_order");
+                            }
                         }
                     }
                 }
@@ -313,7 +394,7 @@ namespace BaiTapLon.Controllers
         }
         public ActionResult Success(Orders OrderInfo)
         {
-
+            
             return View(OrderInfo);
 
         }
@@ -343,7 +424,7 @@ namespace BaiTapLon.Controllers
             }
             if (result.errorCode == "00")
             {
-
+                
                 var OrderInfo = new OrderDraw().getOrderByOrderCode(result.order_code);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();
                 var order_detail = new OrderDraw().getProductByOrder_Details(OrderInfo.IDOder);
                 foreach (var item in order_detail)
@@ -360,10 +441,10 @@ namespace BaiTapLon.Controllers
             }
             else
             {
-
+               
                 ViewBag.status = false;
-
-
+                
+                
             }
             return View("confirm_orderPaymentOnline");
         }
@@ -387,11 +468,11 @@ namespace BaiTapLon.Controllers
             }
             if (errorCode == "0")
             {
-
+                
                 var OrderInfo = new OrderDraw().getOrderByOrderCode(oderCode);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();
                 var order_detail = new OrderDraw().getProductByOrder_Details(OrderInfo.IDOder);
 
-                foreach (var item in order_detail)
+                foreach(var item in order_detail)
                 {
                     new SanphamDraw().UpdateTonKho(item.ProductID, (int)item.Quanlity);
                 }
@@ -403,18 +484,18 @@ namespace BaiTapLon.Controllers
                 Session["CartSession"] = null;
                 return View("oderComplete", OrderInfo);
             }
-
+            
             else
             {
-
+                
                 ViewBag.status = false;
                 return View("cancel_order_momo");
             }
 
-
+          
         }
-
-        public bool saveOrder(string shipName, string shipAddress, string shipMobile, string shipMail, string payment_method, string oderCode)
+        
+        public bool saveOrder(string shipName, string shipAddress, string shipMobile, string shipMail,string payment_method,string oderCode)
         {
 
             var userSession = (UserLogin)Session[Common.Constant.USER_SESSION];
@@ -432,12 +513,12 @@ namespace BaiTapLon.Controllers
             order.Status = 0;
             order.NhanHang = 0;
             order.GiaoHang = 0;
-            if (payment_method.Equals("MOMO"))
+            if(payment_method.Equals("MOMO"))
             {
                 order.DeliveryPaymentMethod = "Cổng thanh toán momo";
                 order.OrderCode = oderCode;
             }
-            if (payment_method.Equals("COD"))
+            if(payment_method.Equals("COD"))
             {
                 order.DeliveryPaymentMethod = "COD";
                 order.OrderCode = oderCode;
@@ -504,7 +585,7 @@ namespace BaiTapLon.Controllers
                     return true;
                 }
                 */
-
+                
                 return true;
             }
             catch (Exception)
@@ -527,7 +608,7 @@ namespace BaiTapLon.Controllers
 
         public ActionResult cancel_order()
         {
-            if (Session[OrderIDDel] != null)
+            if(Session[OrderIDDel] != null)
             {
                 string orderCode = Session[OrderIDDel].ToString();
                 var OrderInfo = new OrderDraw().getOrderByOrderCode(orderCode);//db.Orders.Where(m => m.Code == orderId).FirstOrDefault();                                                        //OrderInfo.StatusPayment = 0;//huy thanh toán

@@ -8,7 +8,7 @@ namespace BaiTapLon.MoMo_API
     public class momoInfo
     {
         
-        public static readonly string endpoint = "https://localhost:44350/lien-he";
+        public static readonly string endpoint = "https://localhost:44350/confirm-orderPaymentOnlineMomo";
         public static readonly string partnerCode = "";
         public static readonly string accessKey = "";
         public static readonly string serectkey = "";

@@ -42,7 +42,7 @@
             <i class="fas fa-bars"></i>
         </button>
 
-        @* <!-- Navbar Search -->
+        <!-- Navbar Search -->
         <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
@@ -54,8 +54,8 @@
             </div>
         </form>
 
-        <!-- Navbar --> *@
-        @* @RenderPage("~/Areas/Admin/Views/Shared/_NagvationLayoutAdmin.cshtml") *@
+        <!-- Navbar -->
+        @RenderPage("~/Areas/Admin/Views/Shared/_NagvationLayoutAdmin.cshtml")
 
     </nav>
 
@@ -141,7 +141,7 @@
 
             </li>
 
-            @* <li class="nav-item dropdown">
+            <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-tools"></i>
                     <span>Quản lí Website</span>
@@ -152,20 +152,20 @@
                     
                 </div>
 
-            </li> *@
-            
+            </li>
+@*             
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-chart-area"></i>
-                    <span>Thống Kê</span>
+                    <span>Thông Kê</span>
                 </a>
-                @* <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                <div class="dropdown-menu" aria-labelledby="pagesDropdown">
                     <a class="dropdown-item" href="/Admin/ThongKe/ThongKeSanPhamHot">Sản Phẩm Hot</a>
                     <a class="dropdown-item" href="/Admin/ThongKe/DoanhThu">Doanh Thu</a>
                     <a class="dropdown-item" href="/Admin/ThongKe/DoanhThuChart">Xem Biểu Đồ</a>
-                </div> *@
+                </div>
 
-            </li>
+            </li> *@
             <li class="nav-item">
                 <a class="nav-link" href="/Admin/Login/Logout">
                     <i class="fas fa-sign-out-alt"></i>
@@ -187,14 +187,14 @@
 
             </div>
             <!-- /.container-fluid -->
-            @* <!-- Sticky Footer -->
+            <!-- Sticky Footer -->
             <footer class="sticky-footer">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
                         <span>Trang quản lý - Nhà Sách NFT</span>
                     </div>
                 </div>
-            </footer> *@
+            </footer>
 
         </div>
         <!-- /.content-wrapper -->
@@ -207,7 +207,7 @@
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    @* <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -223,7 +223,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 
     <!-- Bootstrap core JavaScript-->
     
